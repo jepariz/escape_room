@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Mistério da Biblioteca - Escape Room</title>
+    <style>
+        :root {
+            --bg-color: #FFD166;
+            --panel-bg: #F78C6B;
+            --text-color: #4A0E17;
+            --accent: #FF5A5F;
+            --btn-bg: #832161;
+            --btn-hover: #5D1445;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 22px;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, h2 {
+            text-align: center;
+            text-shadow: 2px 2px 0px #FFF;
+        }
+
+        .container {
+            background-color: var(--panel-bg);
+            border: 8px solid var(--text-color);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .sala { display: none; }
+        .sala.ativa { display: block; }
+
+        button {
+            background-color: var(--btn-bg);
+            color: white;
+            border: 4px solid var(--text-color);
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        button:hover { background-color: var(--btn-hover); }
+        button:active { transform: scale(0.95); }
+
+        /* Enigma 1 */
+        .texto-escondido {
+            background-color: #FFF;
+            padding: 15px;
+            border: 3px dashed var(--text-color);
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        .magico { color: #FFF; }
+        .magico::selection {
+            background-color: var(--accent);
+            color: white;
+        }
+        input[type="text"] {
+            font-size: 20px;
+            padding: 10px;
+            border: 3px solid var(--text-color);
+            border-radius: 8px;
+            width: 80%;
+            margin-bottom: 10px;
+        }
+
+        /* Enigma 2 */
+        .objetos-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .objeto {
+            width: 120px;
+            height: 120px;
+            background-color: #FFD166;
+            border: 5px solid var(--text-color);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: context-menu;
+            user-select: none;
+        }
+        #menu-customizado {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 3px solid var(--text-color);
+            border-radius: 8px;
+            z-index: 100;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.2);
+        }
+        .opcao-menu {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid #ccc;
+        }
+        .opcao-menu:hover { background-color: var(--bg-color); }
+        .opcao-menu:last-child { border-bottom: none; }
+
+        /* Enigma 3 */
+        .linha-tempo {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        .zona-drop {
+            width: 30%;
+            min-height: 120px;
+            background-color: #FFF;
+            border: 4px dashed var(--text-color);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .cartao {
+            background-color: var(--bg-color);
+            border: 3px solid var(--text-color);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            cursor: grab;
+            text-align: center;
+            font-weight: bold;
+        }
+        .relogio {
+            background-color: #832161;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            border: 4px solid var(--text-color);
+            margin-top: 10px;
+            user-select: none;
+        }
+
+        /* Final */
+        #texto-final {
+            background: #FFF;
+            padding: 20px;
+            border: 4px solid var(--text-color);
+            font-family: monospace;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .dica {
+            background-color: #FFF3CD;
+            color: #856404;
+            padding: 15px;
+            border: 2px solid #FFEEBA;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🔍 O Mistério da Biblioteca 🔍</h1>
+
+    <div class="container">
+        <!-- INTRO -->
+        <div id="sala-0" class="sala ativa">
+            <h2>O Sumiço do Livro Dourado</h2>
+            <p>Olá, Detetive! O "Livro Dourado" da escola desapareceu misteriosamente. Precisamos de suas habilidades com o mouse para investigar as pistas deixadas pelo culpado.</p>
+            <p>Você terá que selecionar, copiar, colar, clicar com o botão direito e arrastar objetos para resolver o caso.</p>
+            <button onclick="mudarSala(1)">Iniciar Investigação</button>
+        </div>
+
+        <!-- ENIGMA 1 -->
+        <div id="sala-1" class="sala">
+            <h2>Enigma 1: O Bilhete Invisível</h2>
+            <p>Alguém deixou charadas e escondeu as respostas em tinta invisível. <strong>Selecione o texto em branco abaixo</strong> com o mouse para revelar as palavras.</p>
+            <div class="texto-escondido">
+                <p>1. Tem folhas, mas não é árvore. Tem capa, mas não é super-herói.</p>
+                <p>2. Fica na parede, faz tic-tac, mas não é bomba.</p>
+                <p>3. Ilumina as ideias de quem lê à noite.</p>
+                <br>
+                <p>As respostas secretas são: <span class="magico">Livro</span>, <span class="magico">Relógio</span> e <span class="magico">Luminária</span>.</p>
+            </div>
+            <p>Descobriu? Agora selecione cada palavra secreta (uma por vez), clique com o <strong>botão direito</strong> do mouse, escolha <strong>Copiar</strong> e cole na caixa correta abaixo (
