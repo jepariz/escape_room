@@ -210,4 +210,222 @@
                 <br>
                 <p>As respostas secretas são: <span class="magico">Livro</span>, <span class="magico">Relógio</span> e <span class="magico">Luminária</span>.</p>
             </div>
-            <p>Descobriu? Agora selecione cada palavra secreta (uma por vez), clique com o <strong>botão direito</strong> do mouse, escolha <strong>Copiar</strong> e cole na caixa correta abaixo (
+            <p>Descobriu? Agora selecione cada palavra secreta (uma por vez), clique com o <strong>botão direito</strong> do mouse, escolha <strong>Copiar</strong> e cole na caixa correta abaixo (clicando com o botão direito e escolhendo <strong>Colar</strong>):</p>
+            
+            <input type="text" id="resp1-1" placeholder="Resposta da Charada 1...">
+            <input type="text" id="resp1-2" placeholder="Resposta da Charada 2...">
+            <input type="text" id="resp1-3" placeholder="Resposta da Charada 3...">
+            
+            <br>
+            <button onclick="verificarEnigma1()">Verificar e Avançar</button>
+            <div id="dica-1" class="dica">Dica: Selecione a área em branco dentro do quadrado tracejado segurando o botão esquerdo do mouse.</div>
+        </div>
+
+        <!-- ENIGMA 2 -->
+        <div id="sala-2" class="sala">
+            <h2>Enigma 2: A Pista Oculta</h2>
+            <p>O suspeito deixou a pista verdadeira dentro de um destes objetos, mas há uma charada para você saber qual é:</p>
+            <p style="font-style: italic; background: #fff; padding: 10px; border-radius: 8px;">"Para achar a próxima pista, procure onde o mundo inteiro cabe na sua mão."</p>
+            <p>Descubra qual é o objeto! Clique com o <strong>botão direito</strong> do mouse sobre ele e escolha <strong>"Examinar"</strong>.</p>
+            
+            <div class="objetos-container">
+                <div class="objeto" oncontextmenu="abrirMenu(event, 'lupa')">Lupa</div>
+                <div class="objeto" oncontextmenu="abrirMenu(event, 'globo')">Globo</div>
+                <div class="objeto" oncontextmenu="abrirMenu(event, 'caderno')">Caderno</div>
+            </div>
+
+            <div id="dica-2" class="dica">Dica: Qual objeto representa o "mundo"? Lembre-se de clicar com o BOTÃO DIREITO nele.</div>
+        </div>
+
+        <!-- ENIGMA 3 -->
+        <div id="sala-3" class="sala">
+            <h2>Enigma 3: A Linha do Tempo</h2>
+            <p>Para abrir o cofre final, você precisa <strong>arrastar</strong> os fatos para a ordem correta (1º, 2º e 3º fato) e <strong>clicar no relógio</strong> para ajustar a hora exata em que cada coisa aconteceu, de acordo com o depoimento:</p>
+            <p style="background: #fff; padding: 10px; border-radius: 8px;">"O Detetive chegou à escola às 15:00. Duas horas antes disso, pegadas de tinta foram achadas. Mas o livro já havia sumido às 12:00!"</p>
+            
+            <div id="banco-cartoes" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom: 20px;">
+                <div class="cartao" draggable="true" ondragstart="drag(event)" id="cartao1">O Detetive chegou</div>
+                <div class="cartao" draggable="true" ondragstart="drag(event)" id="cartao2">Pegadas de tinta achadas</div>
+                <div class="cartao" draggable="true" ondragstart="drag(event)" id="cartao3">O livro sumiu</div>
+            </div>
+
+            <div class="linha-tempo">
+                <div class="zona-drop" ondrop="drop(event)" ondragover="allowDrop(event)" id="zona1">
+                    Fato 1
+                    <div class="relogio" onclick="mudarHora(this)" data-hora="12">12:00</div>
+                </div>
+                <div class="zona-drop" ondrop="drop(event)" ondragover="allowDrop(event)" id="zona2">
+                    Fato 2
+                    <div class="relogio" onclick="mudarHora(this)" data-hora="12">12:00</div>
+                </div>
+                <div class="zona-drop" ondrop="drop(event)" ondragover="allowDrop(event)" id="zona3">
+                    Fato 3
+                    <div class="relogio" onclick="mudarHora(this)" data-hora="12">12:00</div>
+                </div>
+            </div>
+            
+            <button onclick="verificarEnigma3()">Desbloquear Cofre</button>
+            <div id="dica-3" class="dica">Dica: O que aconteceu primeiro? Arraste os blocos cinzas para as caixas brancas e clique nos relógios roxos para mudar a hora.</div>
+        </div>
+
+        <!-- FINAL -->
+        <div id="sala-4" class="sala">
+            <h2>🎉 Caso Encerrado! 🎉</h2>
+            <p>Parabéns, Detetive! Você resolveu todos os enigmas e usou o mouse como um verdadeiro profissional.</p>
+            <p>Para registrar sua investigação, <strong>selecione o relatório abaixo, copie (botão direito > Copiar)</strong> e cole no Google Docs que sua turma está criando.</p>
+            
+            <div id="texto-final">
+                RELATÓRIO OFICIAL DE INVESTIGAÇÃO<br>
+                Agente: Aluno(a) do 6º Ano<br>
+                Resumo: O mistério foi resolvido identificando o Livro, o Relógio e a Luminária. A pista estava no Globo Terrestre. O roubo ocorreu às 12:00, as pegadas foram vistas às 13:00 e a polícia chegou às 15:00.<br>
+                Status: OBJETO RECUPERADO COM SUCESSO!
+            </div>
+        </div>
+
+        <!-- Menu Contexto Customizado -->
+        <div id="menu-customizado">
+            <div class="opcao-menu" onclick="acaoMenu('Examinar')">Examinar</div>
+            <div class="opcao-menu" onclick="acaoMenu('Guardar')">Guardar</div>
+            <div class="opcao-menu" onclick="acaoMenu('Descartar')">Descartar</div>
+        </div>
+
+    </div>
+
+    <script>
+        let timerDica;
+        let objetoAtualMenu = '';
+
+        // Sistema de Salas e Dicas
+        function mudarSala(num) {
+            document.querySelectorAll('.sala').forEach(sala => sala.classList.remove('ativa'));
+            document.getElementById('sala-' + num).classList.add('ativa');
+            
+            clearTimeout(timerDica);
+            let dicaElement = document.getElementById('dica-' + num);
+            if(dicaElement) {
+                dicaElement.style.display = 'none';
+                // Define 3 minutos (180.000 ms) para a dica aparecer, conforme pedido
+                timerDica = setTimeout(() => {
+                    dicaElement.style.display = 'block';
+                }, 180000); 
+            }
+        }
+
+        // --- ENIGMA 1 ---
+        function verificarEnigma1() {
+            let r1 = document.getElementById('resp1-1').value.trim().toLowerCase();
+            let r2 = document.getElementById('resp1-2').value.trim().toLowerCase();
+            let r3 = document.getElementById('resp1-3').value.trim().toLowerCase();
+
+            if (r1.includes("livro") && r2.includes("relógio") && r3.includes("luminária")) {
+                alert("Código aceito! Abrindo a Sala 2...");
+                mudarSala(2);
+            } else if (r1.includes("livro") && r2.includes("relogio") && r3.includes("luminaria")) {
+                alert("Código aceito! (Cuidado com os acentos da próxima vez). Abrindo a Sala 2...");
+                mudarSala(2);
+            } else {
+                alert("As respostas estão incorretas ou fora de ordem. Volte ao texto invisível e copie as palavras exatas!");
+            }
+        }
+
+        // --- ENIGMA 2 (Botão Direito) ---
+        function abrirMenu(e, objeto) {
+            e.preventDefault(); // Impede o menu original do Windows/Mac
+            objetoAtualMenu = objeto;
+            const menu = document.getElementById('menu-customizado');
+            
+            // Ajusta a posição do menu
+            const x = e.pageX;
+            const y = e.pageY;
+            
+            menu.style.left = x + 'px';
+            menu.style.top = y + 'px';
+            menu.style.display = 'block';
+        }
+
+        // Esconder menu ao clicar fora
+        document.addEventListener('click', function(e) {
+            if(e.button === 0) { // Clique esquerdo
+                document.getElementById('menu-customizado').style.display = 'none';
+            }
+        });
+
+        function acaoMenu(acao) {
+            document.getElementById('menu-customizado').style.display = 'none';
+            
+            if (acao === 'Examinar') {
+                if (objetoAtualMenu === 'globo') {
+                    alert("Você examinou o Globo... E encontrou a pista verdadeira! O código para avançar estava preso na Antártida. Abrindo Sala 3...");
+                    mudarSala(3);
+                } else if (objetoAtualMenu === 'lupa') {
+                    alert("Você examinou a Lupa. Você só consegue ver seu próprio olho ampliado. Pista Falsa!");
+                } else {
+                    alert("Você examinou o Caderno. Só tem desenhos de palitinhos nele. Pista Falsa!");
+                }
+            } else {
+                alert(`Você escolheu ${acao} o(a) ${objetoAtualMenu}. Nada aconteceu.`);
+            }
+        }
+
+        // --- ENIGMA 3 (Drag and Drop & Cliques) ---
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            // Garante que solte apenas na zona-drop e não em cima do relógio ou de outro cartão
+            if(ev.target.classList.contains('zona-drop')) {
+                ev.target.insertBefore(document.getElementById(data), ev.target.firstChild);
+            }
+        }
+
+        // Sistema dos Relógios
+        const horasPossiveis = ["12:00", "13:00", "14:00", "15:00", "16:00"];
+        function mudarHora(elementoRelogio) {
+            let horaAtual = elementoRelogio.innerText;
+            let index = horasPossiveis.indexOf(horaAtual);
+            let proxIndex = (index + 1) % horasPossiveis.length;
+            elementoRelogio.innerText = horasPossiveis[proxIndex];
+            elementoRelogio.setAttribute("data-hora", horasPossiveis[proxIndex]);
+        }
+
+        function verificarEnigma3() {
+            let zona1 = document.getElementById('zona1');
+            let zona2 = document.getElementById('zona2');
+            let zona3 = document.getElementById('zona3');
+
+            // Verifica os cartões
+            let cartaoZ1 = zona1.querySelector('.cartao') ? zona1.querySelector('.cartao').id : null;
+            let cartaoZ2 = zona2.querySelector('.cartao') ? zona2.querySelector('.cartao').id : null;
+            let cartaoZ3 = zona3.querySelector('.cartao') ? zona3.querySelector('.cartao').id : null;
+
+            // Verifica os relógios
+            let horaZ1 = zona1.querySelector('.relogio').innerText;
+            let horaZ2 = zona2.querySelector('.relogio').innerText;
+            let horaZ3 = zona3.querySelector('.relogio').innerText;
+
+            // Lógica: 
+            // 1º O livro sumiu (cartao3) às 12:00
+            // 2º Pegadas achadas (cartao2) às 13:00 (Duas horas antes das 15:00)
+            // 3º Detetive chegou (cartao1) às 15:00
+            
+            if (cartaoZ1 === 'cartao3' && cartaoZ2 === 'cartao2' && cartaoZ3 === 'cartao1') {
+                if(horaZ1 === "12:00" && horaZ2 === "13:00" && horaZ3 === "15:00") {
+                    mudarSala(4);
+                } else {
+                    alert("A ordem dos fatos está certa, mas os horários nos relógios estão errados. Ajuste os relógios clicando neles!");
+                }
+            } else {
+                alert("A linha do tempo está na ordem errada! Leia o depoimento com atenção e arraste os fatos para os lugares corretos.");
+            }
+        }
+
+    </script>
+</body>
+</html>
